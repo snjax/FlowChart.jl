@@ -1,5 +1,7 @@
-import Base: /, *, +, -
+import Base: /, *, +, -, promote_rule
 using BitIntegers
+import BitIntegers: UBI
+
 
 const _P_ = uint256"21888242871839275222246405745257275088548364400416034343698204186575808495617"
 
@@ -13,6 +15,8 @@ mutable struct ff <: Integer
 end
 
 
+@generated promote_rule(::Type{ff}, ::Type{<:UBI}) = ff
+(::Type{T})(x::ff) where T <: UBI = T(x.v)
 
 (+)(a::ff, b::ff) = ff(a.v + b.v)
 (-)(a::ff, b::ff)  = ff(_P_ + a.v - b.v)
