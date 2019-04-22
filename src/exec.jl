@@ -299,30 +299,31 @@ end
 #   return null;
 # }
 
-function getScope(ctx::Ctx, name::String, selectors::Vector{Selector}) 
-  const sels = [];
-  if (selectors) {
-      for (let i=0; i< selectors.length; i++) {
-          const idx = exec(ctx, selectors[i]);
-          if (ctx.error) return;
 
-          if (idx.type != "NUMBER") return error(ctx, selectors[i], "expected a number");
-          sels.push( idx.value.toJSNumber() );
-      }
-  }
+# function getScope(ctx::Ctx, name::String, selectors::Vector{Selector}) 
+#   const sels = [];
+#   if (selectors) {
+#       for (let i=0; i< selectors.length; i++) {
+#           const idx = exec(ctx, selectors[i]);
+#           if (ctx.error) return;
+
+#           if (idx.type != "NUMBER") return error(ctx, selectors[i], "expected a number");
+#           sels.push( idx.value.toJSNumber() );
+#       }
+#   }
 
 
-  function select(v, s) {
-      s = s || [];
-      if (s.length == 0)  return v;
-      return select(v[s[0]], s.slice(1));
-  }
+#   function select(v, s) {
+#       s = s || [];
+#       if (s.length == 0)  return v;
+#       return select(v[s[0]], s.slice(1));
+#   }
 
-  for (let i=ctx.scopes.length-1; i>=0; i--) {
-      if (ctx.scopes[i][name]) return select(ctx.scopes[i][name], sels);
-  }
-  return null;
-}
+#   for (let i=ctx.scopes.length-1; i>=0; i--) {
+#       if (ctx.scopes[i][name]) return select(ctx.scopes[i][name], sels);
+#   }
+#   return null;
+# }
 
 
 
