@@ -1,0 +1,8 @@
+name = "FF"
+uuid = "2d5464ae-652d-11e9-048d-2b3c8242a9b6"
+authors = ["Igor Gulamov <igor.gulamov@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+BitIntegers = "c3b6d118-76ef-56ca-8cc7-ebb389d030a1"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"

@@ -1,8 +1,10 @@
-using NodeJS
+push!(LOAD_PATH, @__DIR__)
+
+using NodeJS, FF
 import JSON
 import BitIntegers: UInt256, @uint256_str
 
-include("ff.jl")
+
 include("exec.jl")
 
 path = nodejs_cmd()
