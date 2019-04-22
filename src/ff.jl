@@ -1,6 +1,5 @@
 import Base: /, *, +, -, promote_rule
-using BitIntegers
-import BitIntegers: UBI
+import BitIntegers: UBI, @uint256_str, UInt256
 
 
 const _P_ = uint256"21888242871839275222246405745257275088548364400416034343698204186575808495617"
@@ -23,3 +22,4 @@ end
 (-)(a::ff)  = ff(_P_ - a.v)
 (*)(a::ff, b::ff) = ff(widemul(a.v, b.v) % _P_)
 (/)(a::ff, b::ff) = ff(widemul(a.v, invmod(b.v, _P_)) % _P_)
+
