@@ -27,4 +27,5 @@ end
 (*)(a::ff, b::ff) = ff(widemul(a.v, b.v) % _P_)
 (/)(a::ff, b::ff) = ff(widemul(a.v, invmod(b.v, _P_)) % _P_)
 
+iszero(x::ff) = iszero(x.v)
 end #module
