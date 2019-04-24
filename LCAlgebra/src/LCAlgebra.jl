@@ -43,8 +43,8 @@ Signal(x::Signal) = x
 LinearCombination(x::Signal) = LinearCombination(sparsevec([x.id], [ff(1)], maxConstraintSize))
 LinearCombination(x::t) where t<:Integer = LinearCombination(sparsevec([1], [ff(x)], maxConstraintSize))
 LinearCombination(x::LinearCombination) = x
-QEQ(x::LinearCombination) = QEQ(SparseVector(maxConstraintSize, Int64[], ff[]), SparseVector(maxConstraintSize, Int64[], ff[]), x)
-QEQ(x::T) where T<: Union{Signal, ff} = QEQ(LinearCombination(x)) 
+QEQ(x::LinearCombination) = QEQ(LinearCombination(SparseVector(maxConstraintSize, Int64[], ff[])), LinearCombination(SparseVector(maxConstraintSize, Int64[], ff[])), x)
+QEQ(x::T) where T<: LCA = QEQ(LinearCombination(x)) 
 QEQ(x::QEQ) = x
 
 
@@ -73,9 +73,9 @@ QEQ(x::QEQ) = x
 (/)(x::QEQ, y::T) where T<:Integer = QEQ(x.a/ff(y), x.b, x.c/ff(y))
 (*)(x::T, y::QEQ) where T<:Integer = QEQ(y.a*ff(y), y.b, y.c*ff(y))
 
-(*)(x::P, y::T) where {P<:Union{Signal, LinearCombination}, T<:Integer} = LinearCombination(LinearCombination(x).v*ff(y))
-(/)(x::P, y::T) where {P<:Union{Signal, LinearCombination}, T<:Integer} = LinearCombination(LinearCombination(x).v/ff(y))
-(*)(x::P, y::T) where {P<:Integer, T<:Union{Signal, LinearCombination}} = LinearCombination(LinearCombination(y).v*ff(x))
+(*)(x::P, y::T) where {P<:LCB, T<:Integer} = LinearCombination(LinearCombination(x).v*ff(y))
+(/)(x::P, y::T) where {P<:LCB, T<:Integer} = LinearCombination(LinearCombination(x).v/ff(y))
+(*)(x::P, y::T) where {P<:Integer, T<:LCB} = LinearCombination(LinearCombination(y).v*ff(x))
 
 
 # function isZero(a) {
