@@ -17,13 +17,20 @@ import SparseArrays: sparsevec
 import Base: +, -, *, /
 
 
+export Signal, LinearCombination, QEQ
+
 struct LinearCombination
   v::SparseVector{ff,Int64}
 end
 
 struct Signal
   id::Int64
+  equivalence::Union{Int64, Missing}
+  value::Union{ff, Missing}
+  Signal(id::Int64)=new(id, missing, missing)
 end
+
+
 
 struct QEQ
   a::LinearCombination
@@ -99,51 +106,7 @@ iszero(::Signal) = false
 iszero(x::LinearCombination) = nnz(x.v)==0
 iszero(x::QEQ) = iszero(x.c) && (iszero(x.a) || iszero(x.b))
 
-# function canonize(ctx, a) {
-#   if (a.type == "LINEARCOMBINATION") {
-#       const res = clone(a);
-#       for (let k in a.values) {
-#           let s = k;
-#           while (ctx.signals[s].equivalence) s= ctx.signals[s].equivalence;
-#           if ((typeof(ctx.signals[s].value) != "undefined")&&(k != "one")) {
-#               const v = res.values[k].times(ctx.signals[s].value).mod(__P__);
-#               if (!res.values["one"]) {
-#                   res.values["one"]=v;
-#               } else {
-#                   res.values["one"]= res.values["one"].add(v).mod(__P__);
-#               }
-#               delete res.values[k];
-#           } else if (s != k) {
-#               if (!res.values[s]) {
-#                   res.values[s]=bigInt(res.values[k]);
-#               } else {
-#                   res.values[s]= res.values[s].add(res.values[k]).mod(__P__);
-#               }
-#               delete res.values[k];
-#           }
-#       }
-#       for (let k in res.values) {
-#           if (res.values[k].isZero()) delete res.values[k];
-#       }
-#       return res;
-#   } else if (a.type == "QEQ") {
-#       const res = {
-#           type: "QEQ",
-#           a: canonize(ctx, a.a),
-#           b: canonize(ctx, a.b),
-#           c: canonize(ctx, a.c)
-#       };
-#       return res;
-#   } else {
-#       return a;
-#   }
-# }
 
-# use equivalence as Vector{Int64} with zero values for default 
-
-# function canonize(equivalence::Vector{Int64}, x::LinearCombination)
-
-# end
 
 
 end # module

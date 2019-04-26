@@ -13,13 +13,19 @@ uuid = "8ba89e20-285c-5b6f-9357-94700520ee1b"
 
 [[FF]]
 deps = ["BitIntegers", "Test"]
-path = "FF"
+path = "..\\FF"
 uuid = "2d5464ae-652d-11e9-048d-2b3c8242a9b6"
 version = "0.1.0"
 
 [[InteractiveUtils]]
 deps = ["LinearAlgebra", "Markdown"]
 uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
+
+[[LCAlgebra]]
+deps = ["BitIntegers", "FF", "SparseArrays", "Test"]
+path = "..\\LCAlgebra"
+uuid = "6c163a6e-653c-11e9-289e-a937e50e3094"
+version = "0.1.0"
 
 [[Libdl]]
 uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
@@ -34,11 +40,6 @@ uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
 [[Markdown]]
 deps = ["Base64"]
 uuid = "d6f4376e-aef5-505a-96c1-9c027394607a"
-
-[[Protoboard]]
-path = "Protoboard"
-uuid = "833d9690-67d4-11e9-210a-79a55ded025e"
-version = "0.1.0"
 
 [[Random]]
 deps = ["Serialization"]

@@ -1,0 +1,9 @@
+name = "Protoboard"
+uuid = "833d9690-67d4-11e9-210a-79a55ded025e"
+authors = ["Igor Gulamov <igor.gulamov@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+FF = "2d5464ae-652d-11e9-048d-2b3c8242a9b6"
+LCAlgebra = "6c163a6e-653c-11e9-289e-a937e50e3094"
+SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
