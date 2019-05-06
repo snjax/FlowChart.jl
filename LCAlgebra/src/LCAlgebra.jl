@@ -25,9 +25,6 @@ end
 
 struct Signal
   id::Int64
-  equivalence::Union{Int64, Missing}
-  value::Union{ff, Missing}
-  Signal(id::Int64)=new(id, missing, missing)
 end
 
 
@@ -107,6 +104,19 @@ iszero(x::LinearCombination) = nnz(x.v)==0
 iszero(x::QEQ) = iszero(x.c) && (iszero(x.a) || iszero(x.b))
 
 
+function substitute(x::LinearCombination, s::Signal, zero::LinearCombination)
+  t = zero.v[s.id]
+  if t == 0
+    return x
+  end
+  return  x - x.v[s.id]/t*zero
+end
+
+substitute(x::QEQ, s::Signal, zero::LinearCombination) = QEQ(substitute(x.a, s, zero), substitute(x.b, s, zero), substitute(x.c, s, zero))
+
+evaluate(x::Signal, values::T) where T<: AbstractVector = values[x.id]
+evaluate(x::LinearCombination, values::T) where T<: AbstractVector = sum(x .* values)
+evaluate(x::QEQ, values::T) where T<: AbstractVector = evaluate(x.a, values) * evaluate(x.b, values) + evaluate(x.c, values)
 
 
 end # module
