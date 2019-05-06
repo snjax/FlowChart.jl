@@ -13,7 +13,7 @@ module LCAlgebra
 
 using FF
 using SparseArrays, BitIntegers
-import SparseArrays: sparsevec
+import SparseArrays: sparsevec, nonzeroinds
 import Base: +, -, *, /
 
 
@@ -81,6 +81,7 @@ QEQ(x::QEQ) = x
 (/)(x::P, y::T) where {P<:LCB, T<:Integer} = LinearCombination(LinearCombination(x).v/ff(y))
 (*)(x::P, y::T) where {P<:Integer, T<:LCB} = LinearCombination(LinearCombination(y).v*ff(x))
 
+cmp(x::LinearCombination, y::LinearCombination) = sign(cmp(nnz(x.v), nnz(y.v))*4 + cmp(nonzeros(x.v), nonzeros(y.v))*2 + cmp(nonzeroinds(x.v), nonzeroinds(y.v)))
 
 # function isZero(a) {
 #   if (a.type == "NUMBER") {
@@ -112,11 +113,21 @@ function substitute(x::LinearCombination, s::Signal, zero::LinearCombination)
   return  x - x.v[s.id]/t*zero
 end
 
-substitute(x::QEQ, s::Signal, zero::LinearCombination) = QEQ(substitute(x.a, s, zero), substitute(x.b, s, zero), substitute(x.c, s, zero))
+substitute(x::QEQ, s::Signal, zero::LinearCombination)=canonize!(QEQ(substitute(x.a, s, zero), substitute(x.b, s, zero), substitute(x.c, s, zero))) 
 
 evaluate(x::Signal, values::T) where T<: AbstractVector = values[x.id]
 evaluate(x::LinearCombination, values::T) where T<: AbstractVector = sum(x .* values)
 evaluate(x::QEQ, values::T) where T<: AbstractVector = evaluate(x.a, values) * evaluate(x.b, values) + evaluate(x.c, values)
 
+function canonize!(x::QEQ)
+  a = x.a.v[1]
+  b = x.b.v[1]
+  if a!=0 || b!=0
+    x.a.v[1] = 0
+    x.b.v[1] = 0
+    copyto!(x.c.v, (x.c + x.a * b + x.b * a + a*b).v)
+  end
+  return x
+end
 
 end # module
