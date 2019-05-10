@@ -3,7 +3,6 @@ module Protoboard
 using LCAlgebra
 using FF
 using SparseArrays
-using DataStructures
 import SparseArrays: nonzeroinds
 
 
@@ -20,7 +19,7 @@ mutable struct CSTemplate
   constraints::Vector{QEQ}
 end
 
-SSet = SortedSet{Int64,Base.Order.ForwardOrdering}
+
 and(l::Bool...) = reduce((x::Bool, y::Bool)->x&&y, l)
 
 function optimize!(cs::CSTemplate)
@@ -28,12 +27,12 @@ function optimize!(cs::CSTemplate)
   nconstraints=length(constraints)
   nsignals=cs.nsignals
   xsignals=cs.xsignals
-  unmuteds = SSet(1:nsignals)
-  unmutedc = SSet(1:nconstraints)
-  linearc = SSet()
+  unmuteds = Set(1:nsignals)
+  unmutedc = Set(1:nconstraints)
+  linearc = Set()
 
-  indexs = Vector{SSet}
-  indexc = Vector{SSet}
+  indexs = Vector{Set}
+  indexc = Vector{Set}
 
   function mute(ic::Int64, is::Int64)
     #mute constraint
@@ -47,7 +46,7 @@ function optimize!(cs::CSTemplate)
     for i in indexs[is]
       if i != ic
         constraints[i] = substitute(constraints[i], is, c)
-        local newindexc = SSet(ids(constraints[i]))
+        local newindexc = Set(ids(constraints[i]))
         local to_delete = setdiff(indexc[ic], newindexc)
         local to_insert = setdiff(newindexc, indexc[ic])
         indexc[ic] = newindexc
@@ -68,13 +67,13 @@ function optimize!(cs::CSTemplate)
 
 
   for i in 1:nsignals
-    indexs[i] = SSet()
+    indexs[i] = Set()
   end
 
   for i in 1:nconstraints
     c = cs.constraints[i]
     ids = ids(c)
-    indexc[i] = SSet(ids)
+    indexc[i] = Set(ids)
     for j in ids
       push!(indexs[j], i)
     end
@@ -98,7 +97,7 @@ function optimize!(cs::CSTemplate)
         delete!(unmutedc, i)
       else
         delete!(linearc, i)
-        ls = last(indexs[i])
+        ls = maximum(indexc[i])
         if ls > xsignals
           mute(i, ls)
         end
