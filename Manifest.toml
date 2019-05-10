@@ -21,6 +21,12 @@ version = "0.1.0"
 deps = ["LinearAlgebra", "Markdown"]
 uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 
+[[LCAlgebra]]
+deps = ["BitIntegers", "FF", "SparseArrays", "Test"]
+path = "LCAlgebra"
+uuid = "6c163a6e-653c-11e9-289e-a937e50e3094"
+version = "0.1.0"
+
 [[Libdl]]
 uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
 
@@ -36,6 +42,7 @@ deps = ["Base64"]
 uuid = "d6f4376e-aef5-505a-96c1-9c027394607a"
 
 [[Protoboard]]
+deps = ["FF", "LCAlgebra", "SparseArrays"]
 path = "Protoboard"
 uuid = "833d9690-67d4-11e9-210a-79a55ded025e"
 version = "0.1.0"

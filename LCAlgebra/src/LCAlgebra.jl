@@ -17,7 +17,8 @@ import SparseArrays: sparsevec, nonzeroinds
 import Base: +, -, *, /
 
 
-export Signal, LinearCombination, QEQ
+export Signal, SignalState, LinearCombination, QEQ, islc, ids, iszero, substitute
+
 
 struct LinearCombination
   v::SparseVector{ff,Int64}
@@ -44,8 +45,8 @@ LCU = Union{LCA, LCP}
 
 
 Signal(x::Signal) = x
-LinearCombination(x::Signal) = LinearCombination(sparsevec([x.id], [ff(1)], maxConstraintSize))
-LinearCombination(x::t) where t<:Integer = LinearCombination(sparsevec([1], [ff(x)], maxConstraintSize))
+LinearCombination(x::Signal) = LinearCombination(dropzeros!(sparsevec([x.id], [ff(1)], maxConstraintSize)))
+LinearCombination(x::t) where t<:Integer = LinearCombination(dropzeros!(sparsevec([1], [ff(x)], maxConstraintSize)))
 LinearCombination(x::LinearCombination) = x
 QEQ(x::LinearCombination) = QEQ(LinearCombination(SparseVector(maxConstraintSize, Int64[], ff[])), LinearCombination(SparseVector(maxConstraintSize, Int64[], ff[])), x)
 QEQ(x::T) where T<: LCA = QEQ(LinearCombination(x)) 
@@ -103,6 +104,9 @@ cmp(x::LinearCombination, y::LinearCombination) = sign(cmp(nnz(x.v), nnz(y.v))*4
 iszero(::Signal) = false
 iszero(x::LinearCombination) = nnz(x.v)==0
 iszero(x::QEQ) = iszero(x.c) && (iszero(x.a) || iszero(x.b))
+islc(x::QEQ) = iszero(x.a) || iszero(x.b)
+ids(x::LinearCombination) = nonzeroinds(x.v)
+ids(x::QEQ) = unique(vcat(nonzeroinds(x.a.v), nonzeroinds(x.b.v), nonzeroinds(x.c.v)))
 
 
 function substitute(x::LinearCombination, s::Signal, zero::LinearCombination)
@@ -122,7 +126,10 @@ evaluate(x::QEQ, values::T) where T<: AbstractVector = evaluate(x.a, values) * e
 function canonize!(x::QEQ)
   a = x.a.v[1]
   b = x.b.v[1]
-  if a!=0 || b!=0
+  if iszero(x.a) || iszero(x.b) 
+    copyto!(x.a.v, sparsevec(ff[], maxConstraintSize))
+    copyto!(x.b.v, sparsevec(ff[], maxConstraintSize))
+  elseif a!=0 || b!=0
     x.a.v[1] = 0
     x.b.v[1] = 0
     copyto!(x.c.v, (x.c + x.a * b + x.b * a + a*b).v)
